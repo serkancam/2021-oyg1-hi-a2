@@ -1,0 +1,3 @@
+ali,ak,25
+ayşe,al,30
+hasan,can,28
