@@ -7,12 +7,12 @@ cap = cv2.VideoCapture(0)
 while True:
     ret,resim= cap.read()    
     griTon = cv2.cvtColor(resim, cv2.COLOR_BGR2GRAY)
-    yuzler = yuz_casc.detectMultiScale(griTon, 1.3, 7)
+    yuzler = yuz_casc.detectMultiScale(griTon, 1.3, 5)
     for (x, y, w, h) in yuzler:
         cv2.rectangle(resim, (x, y), (x + w, y + h), (0, 255, 0), 2)
         
     cv2.imshow('yuzler', resim)
-    if cv2.waitKey(40)==27:
+    if cv2.waitKey(1)==27:
         break
 cv2.destroyAllWindows()
 cap.release()
