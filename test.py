@@ -1,17 +1,25 @@
 import cv2
 import os
 
-yol=os.path.join(os.getcwd(),"images","chp2","elmalar3.jpg")
-# yol=os.path.join(os.getcwd(),"images","chp2","sekil_geo.jpg")
-# yol=os.path.join(os.getcwd(),"images","chp2","rice_1.jpg")
-image = cv2.imread(yol)
-image = cv2.cvtColor(image,cv2.COLOR_BGR2RGB)
-g = cv2.cvtColor(image,cv2.COLOR_RGB2GRAY)
-edge = cv2.Canny(g, 140, 210)
-contours, hierarchy = cv2.findContours(edge, cv2.RETR_LIST, cv2.CHAIN_APPROX_NONE)
-for c in contours:
-    hull = cv2.convexHull(c)
-    cv2.drawContours(image, [hull], 0, (0, 255, 0), 2)
+cap=cv2.VideoCapture(0)
+while True:
+    _,image = cap.read()
+    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    thresh = cv2.Canny(gray, 40,140)
 
-cv2.imshow("image",image)
-cv2.waitKey(0)
+    # Find contour and sort by contour area
+    cnts = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    cnts = cnts[0] if len(cnts) == 2 else cnts[1]
+    cnts = sorted(cnts, key=cv2.contourArea, reverse=True)
+
+    # Find bounding box and extract ROI
+    for c in cnts:
+        x,y,w,h = cv2.boundingRect(c)
+        ROI = image[y:y+h, x:x+w]
+        break
+
+    cv2.imshow('ROI',ROI)
+    if cv2.waitKey(600)==27:
+        break
+cap.release()
+cv2.destroyAllWindows()
