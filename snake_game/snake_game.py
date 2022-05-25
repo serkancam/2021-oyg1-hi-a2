@@ -83,12 +83,17 @@ class HandDetector:
 
                 ## draw
                 if draw:
+                    el="Sol"
+                    
+                    if myHand["type"]=="Right":
+                        el="Sag"
+
                     self.mpDraw.draw_landmarks(img, handLms,
                                                self.mpHands.HAND_CONNECTIONS)
                     cv2.rectangle(img, (bbox[0] - 20, bbox[1] - 20),
                                   (bbox[0] + bbox[2] + 20, bbox[1] + bbox[3] + 20),
                                   (255, 0, 255), 2)
-                    cv2.putText(img, myHand["type"], (bbox[0] - 30, bbox[1] - 30), cv2.FONT_HERSHEY_PLAIN,
+                    cv2.putText(img,el , (bbox[0] - 30, bbox[1] - 30), cv2.FONT_HERSHEY_PLAIN,
                                 2, (255, 0, 255), 2)
         if draw:
             return allHands, img
@@ -231,10 +236,12 @@ class SnakeGameClass:
     def update(self, imgMain, currentHead):
 
         if self.gameOver:
-            putTextRect(imgMain, "Game Over", [300, 400],
+            
+            putTextRect(imgMain, "Oyun Sonu", [300, 400],
                                scale=7, thickness=5, offset=20)
-            putTextRect(imgMain, f'Your Score: {self.score}', [300, 550],
+            putTextRect(imgMain, f'Skorun: {self.score}', [300, 550],
                                scale=7, thickness=5, offset=20)
+            
         else:
             px, py = self.previousHead
             cx, cy = currentHead
@@ -274,7 +281,7 @@ class SnakeGameClass:
             imgMain = overlayPNG(imgMain, self.imgFood,
                                         (rx - self.wFood // 2, ry - self.hFood // 2))
 
-            putTextRect(imgMain, f'Score: {self.score}', [50, 80],
+            putTextRect(imgMain, f'Skorun: {self.score}', [50, 80],
                                scale=3, thickness=3, offset=10)
 
             # Check for Collision
@@ -309,8 +316,9 @@ while True:
         img = game.update(img, pointIndex)
     cv2.imshow("Image", img)
     key = cv2.waitKey(1)
-    if key == ord('r'):
+    if key == ord('r'):       
         game.gameOver = False
+        game.score=0
     elif key==27:
         break
 cap.release()
